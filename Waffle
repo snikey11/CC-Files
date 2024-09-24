@@ -34,7 +34,7 @@ local phrases = {
     {text = "Are you brave enough", color = colors.lime, x = 1, y = 3},
     {text = "to try something new?", color = colors.lime, x = 1, y = 4},
     {text = "Do you dare to try our", color = colors.lime, x = 1, y = 5},
-    {text = Warden tendrils?", color = colors.lightBlue, x = 1, y = 6},
+    {text = "Warden tendrils?", color = colors.lightBlue, x = 1, y = 6},
     {text = "The Queen Bee omlette?", color = colors.lightblue, x = 1, y = 7},
     {text = "Even the Elder Guardian Waffle?", color = colors.lightBlue, x = 1, y = 8},
     {text = "Coming soon to a spawn near you", color = colors.green, x=1, y=9},
