@@ -35,7 +35,7 @@ local phrases = {
     {text = "How about a Queen Bee omlette?", color = colors.lightBlue, x = 1, y = 5},
     {text = "Even a Elder Guardian Waffle?", color = colors.Cyan, x = 1, y = 6},
     {text = "Coming soon to a spawn near you", color = colors.Green, x=1, y=7},
-    {text = "The Deep Dark's World Famous", color = colors.Lime, x=1, y=8}
+    {text = "The Deep Dark's World Famous", color = colors.Lime, x=1, y=8},
     {text = "Waffle House! (TM)", color = colors.Yellow, x=1, y=9}
 }
 
