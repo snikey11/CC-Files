@@ -7,7 +7,7 @@ end
 
 -- Function to display text on the monitor with specific color and position
 local function displayText(monitor, text, color, x, y)
-    monitor.setTextColor(color)
+    monitor.setTextColor(colors.pink)
     monitor.setCursorPos(x, y)
     monitor.write(text)
 end
@@ -30,14 +30,16 @@ clearMonitor(monitor)
 -- Define phrases and their colors
 local phrases = {
    {text = "Hey! Yeah you over there!", color = colors.lime, x = 1, y = 1},
-    {text = "Are you tired of normal food?", color = colors.lime, x = 1, y = 2},
-    {text = "Are you brave enough to try something new?", color = colors.lime, x = 1, y = 3},
-    {text = "Do you dare to try our Warden tendrils?", color = colors.lightBlue, x = 1, y = 4},
-    {text = "Bold enough for a Queen Bee omlette?", color = colors.lightblue, x = 1, y = 5},
-    {text = "Famished enough for an Elder Guardian Waffle?", color = colors.lightBlue, x = 1, y = 6},
-    {text = "Coming soon to a spawn near you", color = colors.green, x=1, y=7},
-    {text = "The Deep Dark's World Famous", color = colors.lime, x=1, y=8},
-    {text = "Waffle House! (TM)", color = colors.orange, x=1, y=9}
+    {text = "Are you tired of food?", color = colors.lime, x = 1, y = 2},
+    {text = "Are you brave enough", color = colors.lime, x = 1, y = 3},
+    {text = "to try something new?", color = colors.lime, x = 1, y = 4},
+    {text = "Do you dare to try our", color = colors.lime, x = 1, y = 5},
+    {text = Warden tendrils?", color = colors.lightBlue, x = 1, y = 6},
+    {text = "The Queen Bee omlette?", color = colors.lightblue, x = 1, y = 7},
+    {text = "Even the Elder Guardian Waffle?", color = colors.lightBlue, x = 1, y = 8},
+    {text = "Coming soon to a spawn near you", color = colors.green, x=1, y=9},
+    {text = "The Deep Dark's World Famous", color = colors.lime, x=1, y=10},
+    {text = "Waffle House! (TM)", color = colors.orange, x=1, y=11}
 }
 
 -- Display each phrase on the monitor
