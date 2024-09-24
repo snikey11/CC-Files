@@ -28,9 +28,15 @@ clearMonitor(monitor)
 
 -- Define phrases and their colors
 local phrases = {
-    {text = "Welcome to Snikey's Subway!", color = colors.lightBlue, x = 1, y = 1},
-    {text = "Keep Left for City Subway", color = colors.pink, x = 1, y = 2},
-    {text = "Keep Right for Public Railway", color = colors.lime, x = 1, y = 3}
+  {text = "Hey! Yeah you over there!", color = colors.Orange, x = 1, y = 1},
+    {text = "Are you tired of normal food?", color = colors.Red, x = 1, y = 2},
+    {text = "Do you wish new animal DLC existed for you to eat?", color = colors.Purple, x = 1, y = 3},
+    {text = "Are you hungry enough to dare to try our warden tendrils?", color = colors.darkBlue, x = 1, y = 4},
+    {text = "How about a Queen Bee omlette?", color = colors.lightBlue, x = 1, y = 5},
+    {text = "Even a Elder Guardian Waffle?", color = colors.Cyan, x = 1, y = 6},
+    {text = "Coming soon to a spawn near you", color = colors.Green, x=1, y=7},
+    {text = "The Deep Dark's World Famous", color = colors.Lime, x=1, y=8}
+    {text = "Waffle House! (TM)", color = colors.Yellow, x=1, y=9}
 }
 
 -- Display each phrase on the monitor
