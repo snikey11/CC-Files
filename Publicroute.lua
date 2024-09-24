@@ -29,14 +29,15 @@ clearMonitor(monitor)
 
 -- Define phrases and their colors
 local phrases = {
-    {text = "Welcome to", color = colors.lightBlue, x = 1, y = 1},
-    {text = "Snikey's Subway", color = colors.lightBlue, x = 1, y = 2},
-    {text = "This is the", color = colors.pink, x = 1, y = 3},
-    {text = "Public Railway Line", color = colors.pink, x = 1, y = 4},
-    {text = "Head up the Stairs and", color = colors.lime, x = 1, y = 5},
-    {text = "Take the Pink Elevator", color = colors.lime, x = 1, y = 6},
-    {text = "Watch the Gap", color = colors.orange, x=1, y=7},
-    {text = "Enjoy your Stay!", color = colors.orange, x=1, y=8}
+   {text = "Hey! Yeah you over there!", color = colors.orange, x = 1, y = 1},
+    {text = "Are you tired of normal food?", color = colors.red, x = 1, y = 2},
+    {text = "Are you brave enough to try something new?", color = colors.purple, x = 1, y = 3},
+    {text = "Do you dare to try our Warden tendrils?", color = colors.darkblue, x = 1, y = 4},
+    {text = "Bold enough for a Queen Bee omlette?", color = colors.lightblue, x = 1, y = 5},
+    {text = "Famished enough for an Elder Guardian Waffle?", color = colors.cyan, x = 1, y = 6},
+    {text = "Coming soon to a spawn near you", color = colors.green, x=1, y=7},
+    {text = "The Deep Dark's World Famous", color = colors.lime, x=1, y=8},
+    {text = "Waffle House! (TM)", color = colors.yellow, x=1, y=9}
 }
 
 -- Display each phrase on the monitor
