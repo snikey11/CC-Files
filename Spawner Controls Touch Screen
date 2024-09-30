@@ -1,6 +1,7 @@
--- Set the background color to cyan
-term.setBackgroundColor(colors.cyan)
-term.clear()
+-- Get the monitor
+local monitor = peripheral.wrap("top") -- Change "top" to the side where your monitor is connected
+monitor.setBackgroundColor(colors.cyan)
+monitor.clear()
 
 -- Define button properties with their corresponding computers
 local buttons = {
@@ -21,17 +22,17 @@ local function drawButtons()
         local y = 2 + (i - 1) * 3
         
         -- Draw button border
-        term.setBackgroundColor(colors.black)
-        term.setTextColor(colors.purple)
-        term.setCursorPos(x, y)
-        term.write(string.rep(" ", 15)) -- Button width
-        term.setCursorPos(x, y)
-        term.write(" " .. button.label .. " ")
+        monitor.setBackgroundColor(colors.black)
+        monitor.setTextColor(colors.purple)
+        monitor.setCursorPos(x, y)
+        monitor.write(string.rep(" ", 15)) -- Button width
+        monitor.setCursorPos(x, y)
+        monitor.write(" " .. button.label .. " ")
         
-        -- Reset colors for text
-        term.setBackgroundColor(colors.cyan)
-        term.setCursorPos(x, y)
-        term.write(string.rep(" ", 15))
+        -- Reset colors for background
+        monitor.setBackgroundColor(colors.cyan)
+        monitor.setCursorPos(x, y)
+        monitor.write(string.rep(" ", 15))
     end
 end
 
