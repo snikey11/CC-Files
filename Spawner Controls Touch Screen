@@ -1,6 +1,11 @@
--- Check if a monitor is attached
-local monitorSide = "top" -- Change to the correct side if necessary
-local monitor = peripheral.wrap(monitorSide)
+monitors = {peripheral.find("monitor")}
+local mon = {}
+for funcName,_ in pairs(monitors[1]) do
+	mon[funcName] = function(...)
+		for i=1,#monitors-1 do monitors[i][funcName](unpack(arg)) end
+		return monitors[#monitors][funcName](unpack(arg))
+	end
+end
 
 -- Set the background color to cyan
 monitor.setBackgroundColor(colors.cyan)
