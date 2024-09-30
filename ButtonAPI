@@ -1,233 +1,130 @@
-monitors = {peripheral.find("monitor")}
+-- Find all connected monitors
+local monitors = {peripheral.find("monitor")}
 local mon = {}
-for funcName,_ in pairs(monitors[1]) do
-	mon[funcName] = function(...)
-		for i=1,#monitors-1 do monitors[i][funcName](unpack(arg)) end
-		return monitors[#monitors][funcName](unpack(arg))
-	end
+
+-- Create a wrapper for monitor functions
+for funcName, _ in pairs(monitors[1]) do
+    mon[funcName] = function(...)
+        for i = 1, #monitors do
+            monitors[i][funcName](...)
+        end
+    end
 end
 
+-- Set initial properties
 mon.setTextScale(1)
 mon.setTextColor(colors.white)
-local button={}
 mon.setBackgroundColor(colors.black)
 
+local button = {}
+
+-- Function to clear the button table
 function clearTable()
-   button = {}
+    button = {}
 end
 
+-- Function to set button state
 function setButton(name, buttonOn)
-   print(name)
-   print(button[name]["active"])
-   button[name]["active"] = buttonOn
-   screen()
+    button[name]["active"] = buttonOn
+    screen()
 end
-                                             
+
+-- Function to define button properties
 function setTable(name, func, param, xmin, xmax, ymin, ymax)
-   button[name] = {}
-   button[name]["func"] = func
-   button[name]["active"] = false
-   button[name]["param"] = param
-   button[name]["xmin"] = xmin
-   button[name]["ymin"] = ymin
-   button[name]["xmax"] = xmax
-   button[name]["ymax"] = ymax
+    button[name] = {
+        func = func,
+        active = false,
+        param = param,
+        xmin = xmin,
+        ymin = ymin,
+        xmax = xmax,
+        ymax = ymax
+    }
 end
 
+-- Example function for button action
 function funcName()
-   print("You clicked buttonText")
+    print("You clicked ButtonText")
 end
-        
+
+-- Fill the button table
 function fillTable()
-   setTable("ButtonText", funcName, 5, 25, 4, 8)
-end     
+    setTable("ButtonText", funcName, 5, 25, 4, 8)
+end
 
+-- Function to fill the button with color and text
 function fill(text, color, bData)
-   mon.setBackgroundColor(color)
-   local yspot = math.floor((bData["ymin"] + bData["ymax"]) /2)
-   local xspot = math.floor((bData["xmax"] - bData["xmin"] - string.len(text)) /2) +1
-   for j = bData["ymin"], bData["ymax"] do
-      mon.setCursorPos(bData["xmin"], j)
-      if j == yspot then
-         for k = 0, bData["xmax"] - bData["xmin"] - string.len(text) +1 do
-            if k == xspot then
-               mon.write(text)
-            else
-               mon.write(" ")
+    mon.setBackgroundColor(color)
+    local yspot = math.floor((bData["ymin"] + bData["ymax"]) / 2)
+    local xspot = math.floor((bData["xmax"] - bData["xmin"] - string.len(text)) / 2) + 1
+    for j = bData["ymin"], bData["ymax"] do
+        mon.setCursorPos(bData["xmin"], j)
+        if j == yspot then
+            for k = 0, bData["xmax"] - bData["xmin"] - string.len(text) + 1 do
+                if k == xspot then
+                    mon.write(text)
+                else
+                    mon.write(" ")
+                end
             end
-         end
-      else
-         for i = bData["xmin"], bData["xmax"] do
-            mon.write(" ")
-         end
-      end
-   end
-   mon.setBackgroundColor(colors.black)
+        else
+            for i = bData["xmin"], bData["xmax"] do
+                mon.write(" ")
+            end
+        end
+    end
+    mon.setBackgroundColor(colors.black)
 end
-     
+
+-- Function to refresh the screen with button states
 function screen()
-   local currColor
-   for name,data in pairs(button) do
-      local on = data["active"]
-      if on == true then currColor = colors.lime else currColor = colors.red end
-      fill(name, currColor, data)
-   end
+    local currColor
+    for name, data in pairs(button) do
+        currColor = data["active"] and colors.lime or colors.red
+        fill(name, currColor, data)
+    end
 end
 
+-- Function to toggle button state
 function toggleButton(name)
-   button[name]["active"] = not button[name]["active"]
-   screen()
-end     
-
-function flash(name)
-   toggleButton(name)
-   screen()
-   sleep(0.15)
-   toggleButton(name)
-   screen()
+    button[name]["active"] = not button[name]["active"]
+    screen()
 end
-                                             
+
+-- Function to check mouse click coordinates
 function checkxy(x, y)
-   for name, data in pairs(button) do
-      if y>=data["ymin"] and  y <= data["ymax"] then
-         if x>=data["xmin"] and x<= data["xmax"] then
+    for name, data in pairs(button) do
+        if y >= data["ymin"] and y <= data["ymax"] and x >= data["xmin"] and x <= data["xmax"] then
             if data["param"] == "" then
-              data["func"]()
+                data["func"]()
             else
-              data["func"](data["param"])
+                data["func"](data["param"])
             end
             return true
-            --data["active"] = not data["active"]
-            --print(name)
-         end
-      end
-   end
-   return false
+        end
+    end
+    return false
 end
-     
+
+-- Function to display heading
 function heading(text)
-   w, h = mon.getSize()
-   mon.setCursorPos((w-string.len(text))/2+1, 1)
-   mon.write(text)
+    local w, h = mon.getSize()
+    mon.setCursorPos((w - string.len(text)) / 2 + 1, 1)
+    mon.write(text)
 end
-     
+
+-- Function to display a label
 function label(w, h, text)
-   mon.setCursorPos(w, h)
-   mon.write(text)
-endmonitors = {peripheral.find("monitor")}
-local mon = {}
-for funcName,_ in pairs(monitors[1]) do
-	mon[funcName] = function(...)
-		for i=1,#monitors-1 do monitors[i][funcName](unpack(arg)) end
-		return monitors[#monitors][funcName](unpack(arg))
-	end
+    mon.setCursorPos(w, h)
+    mon.write(text)
 end
 
-mon.setTextScale(1)
-mon.setTextColor(colors.white)
-local button={}
-mon.setBackgroundColor(colors.black)
+-- Initialize the buttons
+fillTable()
+screen()
 
-function clearTable()
-   button = {}
-end
-
-function setButton(name, buttonOn)
-   print(name)
-   print(button[name]["active"])
-   button[name]["active"] = buttonOn
-   screen()
-end
-                                             
-function setTable(name, func, param, xmin, xmax, ymin, ymax)
-   button[name] = {}
-   button[name]["func"] = func
-   button[name]["active"] = false
-   button[name]["param"] = param
-   button[name]["xmin"] = xmin
-   button[name]["ymin"] = ymin
-   button[name]["xmax"] = xmax
-   button[name]["ymax"] = ymax
-end
-
-function funcName()
-   print("You clicked buttonText")
-end
-        
-function fillTable()
-   setTable("ButtonText", funcName, 5, 25, 4, 8)
-end     
-
-function fill(text, color, bData)
-   mon.setBackgroundColor(color)
-   local yspot = math.floor((bData["ymin"] + bData["ymax"]) /2)
-   local xspot = math.floor((bData["xmax"] - bData["xmin"] - string.len(text)) /2) +1
-   for j = bData["ymin"], bData["ymax"] do
-      mon.setCursorPos(bData["xmin"], j)
-      if j == yspot then
-         for k = 0, bData["xmax"] - bData["xmin"] - string.len(text) +1 do
-            if k == xspot then
-               mon.write(text)
-            else
-               mon.write(" ")
-            end
-         end
-      else
-         for i = bData["xmin"], bData["xmax"] do
-            mon.write(" ")
-         end
-      end
-   end
-   mon.setBackgroundColor(colors.black)
-end
-     
-function screen()
-   local currColor
-   for name,data in pairs(button) do
-      local on = data["active"]
-      if on == true then currColor = colors.lime else currColor = colors.red end
-      fill(name, currColor, data)
-   end
-end
-
-function toggleButton(name)
-   button[name]["active"] = not button[name]["active"]
-   screen()
-end     
-
-function flash(name)
-   toggleButton(name)
-   screen()
-   sleep(0.15)
-   toggleButton(name)
-   screen()
-end
-                                             
-function checkxy(x, y)
-   for name, data in pairs(button) do
-      if y>=data["ymin"] and  y <= data["ymax"] then
-         if x>=data["xmin"] and x<= data["xmax"] then
-            if data["param"] == "" then
-              data["func"]()
-            else
-              data["func"](data["param"])
-            end
-            return true
-            --data["active"] = not data["active"]
-            --print(name)
-         end
-      end
-   end
-   return false
-end
-     
-function heading(text)
-   w, h = mon.getSize()
-   mon.setCursorPos((w-string.len(text))/2+1, 1)
-   mon.write(text)
-end
-     
-function label(w, h, text)
-   mon.setCursorPos(w, h)
-   mon.write(text)
+-- Main loop to check for mouse clicks
+while true do
+    local event, param1, param2 = os.pullEvent("mouse_click")
+    checkxy(param1, param2)
 end
