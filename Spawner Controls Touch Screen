@@ -1,5 +1,8 @@
--- Get the monitor
-local monitor = peripheral.wrap("top") -- Change "top" to the side where your monitor is connected
+-- Check if a monitor is attached
+local monitorSide = "top" -- Change to the correct side if necessary
+local monitor = peripheral.wrap(monitorSide)
+
+-- Set the background color to cyan
 monitor.setBackgroundColor(colors.cyan)
 monitor.clear()
 
