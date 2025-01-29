@@ -1,0 +1,76 @@
+-- Initialize peripherals
+local monitor = peripheral.wrap("top") -- Monitor is above the computer
+monitor.setTextScale(1)
+monitor.clear()
+
+-- Button properties
+local buttons = {
+    {label = "cow", x = 2, y = 2, width = 10, height = 3, color = colors.red, active = false},
+    {label = "chicken", x = 2, y = 6, width = 10, height = 3, color = colors.red, active = false},
+    {label = "pig", x = 2, y = 10, width = 10, height = 3, color = colors.red, active = false},
+    {label = "sheep", x = 2, y = 14, width = 10, height = 3, color = colors.red, active = false}
+}
+
+-- Draw a button
+local function drawButton(button)
+    local bgColor = button.color
+    monitor.setBackgroundColor(bgColor)
+    monitor.setTextColor(colors.white)
+    
+    -- Fill the button area
+    for i = 0, button.height - 1 do
+        monitor.setCursorPos(button.x, button.y + i)
+        monitor.write(string.rep(" ", button.width))
+    end
+    
+    -- Write the label in the center
+    local labelX = button.x + math.floor((button.width - #button.label) / 2)
+    local labelY = button.y + math.floor(button.height / 2)
+    monitor.setCursorPos(labelX, labelY)
+    monitor.write(button.label)
+    
+    monitor.setBackgroundColor(colors.black) -- Reset background
+end
+
+-- Draw all buttons
+local function drawButtons()
+    for _, button in ipairs(buttons) do
+        drawButton(button)
+    end
+end
+
+-- Check if a touch is within a button's bounds
+local function isTouchInButton(x, y, button)
+    return x >= button.x and x < (button.x + button.width) and y >= button.y and y < (button.y + button.height)
+end
+
+-- Toggle button state
+local function toggleButton(button)
+    if button.active then
+        button.color = colors.red
+    else
+        button.color = colors.green
+    end
+    button.active = not button.active
+end
+
+-- Main program loop
+local function main()
+    drawButtons()
+    
+    while true do
+        -- Wait for monitor touch events
+        local event, side, x, y = os.pullEvent("monitor_touch")
+        
+        for _, button in ipairs(buttons) do
+            if isTouchInButton(x, y, button) then
+                toggleButton(button)
+                drawButton(button)
+                break
+            end
+        end
+    end
+end
+
+-- Run the main loop
+main()
