@@ -11,8 +11,8 @@ print("Listening for signals from Computer 1...")
 local redstoneMapping = {
     Cow = "left",
     Pig = "back",
-    Chicken = "right"
-    -- Sheep is not assigned to redstone
+    Chicken = "right",
+    Sheep = "front"  -- Added Sheep to the front
 }
 
 while true do
