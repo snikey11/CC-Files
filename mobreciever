@@ -2,10 +2,31 @@ local modem = peripheral.find("modem")
 if not modem then
     error("No wireless modem found!")
 end
+
 rednet.open(peripheral.getName(modem))
 
-print("Waiting for messages...")
+print("Listening for signals from Computer 1...")
+
+-- Mapping button names to redstone sides
+local redstoneMapping = {
+    Cow = "left",
+    Pig = "back",
+    Chicken = "right"
+    -- Sheep is not assigned to redstone
+}
+
 while true do
-    local senderId, message, protocol = rednet.receive()
-    print("Received message: " .. message)
+    local senderId, message = rednet.receive()
+    
+    -- Parse message format: "Cow:on" or "Pig:off"
+    local name, state = message:match("([^:]+):([^:]+)")
+    
+    if name and state then
+        local side = redstoneMapping[name]
+        if side then
+            local isActive = (state == "on")
+            redstone.setOutput(side, isActive)
+            print("Set redstone output on " .. side .. " to " .. tostring(isActive))
+        end
+    end
 end
