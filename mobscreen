@@ -56,7 +56,13 @@ end
 -- Function to toggle button state and send a signal
 local function toggleButton(button)
     button.active = not button.active
-    button.color = colors.green if button.active else then colors.red
+
+    -- Fix: Proper if-else syntax
+    if button.active then
+        button.color = colors.green
+    else
+        button.color = colors.red
+    end
     
     drawButton(button)
 
