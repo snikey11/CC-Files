@@ -20,7 +20,7 @@ monitor.clear()
 local buttons_1 = {
     {label = "Blaze", x = 2, y = 2, width = 11, height = 3, color = colors.red, active = false},
     {label = "Pyromancer", x = 2, y = 6, width = 11, height = 3, color = colors.red, active = false},
-    {label = "Enderman", x = 2, y = 11, width = 11, height = 3, color = colors.red, active = false},
+    {label = "Enderman", x = 2, y = 10, width = 11, height = 3, color = colors.red, active = false},
     {label = "ElderGuard", x = 2, y = 14, width = 11, height = 3, color = colors.red, active = false}
 }
 
@@ -28,7 +28,7 @@ local buttons_1 = {
 local buttons_2 = {
     {label = "Witch", x = 14, y = 2, width = 11, height = 3, color = colors.red, active = false},
     {label = "Wither", x = 14, y = 6, width = 11, height = 3, color = colors.red, active = false},
-    {label = "CaveCreeper", x = 14, y = 11, width = 11, height = 3, color = colors.red, active = false},
+    {label = "CaveCreeper", x = 14, y = 10, width = 11, height = 3, color = colors.red, active = false},
     {label = "AncKnight", x = 14, y = 14, width = 11, height = 3, color = colors.red, active = false}
 }
 
