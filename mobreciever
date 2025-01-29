@@ -9,10 +9,10 @@ print("Listening for signals from Computer 1...")
 
 -- Mapping button names to redstone sides
 local redstoneMapping = {
-    Cow = "left",
-    Pig = "back",
-    Chicken = "right",
-    Sheep = "front"  -- Added Sheep to the front
+    Blaze = "left",
+    Pyromancer = "back",
+    Enderman = "right",
+    ElderGuard = "front" 
 }
 
 while true do
