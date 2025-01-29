@@ -10,17 +10,26 @@ end
 
 rednet.open(peripheral.getName(modem)) -- Open the wireless modem
 
-local targetComputerID = 2 -- Set this to the actual ID of the second computer
+local targetComputerID_2 = 2  -- ID for Computer 2
+local targetComputerID_3 = 3  -- ID for Computer 3
 
 monitor.setTextScale(1)
 monitor.clear()
 
--- Define buttons
-local buttons = {
+-- Define buttons for the first set (Cow, Pig, Chicken, Sheep)
+local buttons_1 = {
     {label = "Cow", x = 2, y = 2, width = 10, height = 3, color = colors.red, active = false},
     {label = "Pig", x = 2, y = 6, width = 10, height = 3, color = colors.red, active = false},
     {label = "Chicken", x = 2, y = 10, width = 10, height = 3, color = colors.red, active = false},
     {label = "Sheep", x = 2, y = 14, width = 10, height = 3, color = colors.red, active = false}
+}
+
+-- Define buttons for the second set (Witch, Wither, Cave Creeper, Ancient Knight)
+local buttons_2 = {
+    {label = "Witch", x = 14, y = 2, width = 10, height = 3, color = colors.red, active = false},
+    {label = "Wither", x = 14, y = 6, width = 10, height = 3, color = colors.red, active = false},
+    {label = "Cave Creeper", x = 14, y = 10, width = 10, height = 3, color = colors.red, active = false},
+    {label = "Ancient Knight", x = 14, y = 14, width = 10, height = 3, color = colors.red, active = false}
 }
 
 -- Function to draw a button
@@ -41,9 +50,12 @@ local function drawButton(button)
     monitor.setBackgroundColor(colors.black) -- Reset background
 end
 
--- Function to draw all buttons
+-- Function to draw all buttons (both sets)
 local function drawButtons()
-    for _, button in ipairs(buttons) do
+    for _, button in ipairs(buttons_1) do
+        drawButton(button)
+    end
+    for _, button in ipairs(buttons_2) do
         drawButton(button)
     end
 end
@@ -54,10 +66,10 @@ local function isTouchInButton(x, y, button)
 end
 
 -- Function to toggle button state and send a signal
-local function toggleButton(button)
+local function toggleButton(button, targetComputerID)
     button.active = not button.active
 
-    -- Fix: Proper if-else syntax
+    -- Change button color
     if button.active then
         button.color = colors.green
     else
@@ -66,9 +78,10 @@ local function toggleButton(button)
     
     drawButton(button)
 
-    -- Send signal to Computer 2
-    rednet.send(targetComputerID, button.label .. ":" .. (button.active and "on" or "off"))
-    print("Sent: " .. button.label .. " -> " .. (button.active and "on" or "off"))
+    -- Send signal to the correct computer
+    local targetID = targetComputerID
+    rednet.send(targetID, button.label .. ":" .. (button.active and "on" or "off"))
+    print("Sent to Computer " .. targetID .. ": " .. button.label .. " -> " .. (button.active and "on" or "off"))
 end
 
 -- Main program loop
@@ -78,9 +91,18 @@ local function main()
     while true do
         local event, side, x, y = os.pullEvent("monitor_touch")
 
-        for _, button in ipairs(buttons) do
+        -- Check which button was clicked in the first set
+        for _, button in ipairs(buttons_1) do
             if isTouchInButton(x, y, button) then
-                toggleButton(button)
+                toggleButton(button, targetComputerID_2)
+                break
+            end
+        end
+
+        -- Check which button was clicked in the second set
+        for _, button in ipairs(buttons_2) do
+            if isTouchInButton(x, y, button) then
+                toggleButton(button, targetComputerID_3)
                 break
             end
         end
