@@ -12,8 +12,8 @@ print("Listening for signals from Computer 1...")
 local redstoneMapping = {
     Witch = "left",
     Wither = "back",
-    Cave Creeper = "right",
-    Ancient Knight = "front"
+    CaveCreeper = "right",
+    AncKnight = "front"
 }
 
 while true do
