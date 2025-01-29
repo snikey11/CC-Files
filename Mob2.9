@@ -1,5 +1,11 @@
 -- Initialize peripherals
 local monitor = peripheral.wrap("top") -- Monitor is above the computer
+local modem = peripheral.find("modem") -- Find a wireless modem
+if not modem then
+    error("No wireless modem found!")
+end
+rednet.open(peripheral.getName(modem)) -- Open the modem for communication
+
 monitor.setTextScale(1)
 monitor.clear()
 
@@ -44,12 +50,13 @@ local function isTouchInButton(x, y, button)
     return x >= button.x and x < (button.x + button.width) and y >= button.y and y < (button.y + button.height)
 end
 
--- Toggle button state
+-- Toggle button state and send a rednet signal
 local function toggleButton(button)
     if button.active then
         button.color = colors.red
     else
         button.color = colors.green
+        rednet.broadcast(button.label) -- Send the button label via rednet
     end
     button.active = not button.active
 end
