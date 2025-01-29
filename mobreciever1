@@ -1,3 +1,4 @@
+rednet.open("bottom")
 local modem = peripheral.find("modem")
 if not modem then
     error("No wireless modem found!")
