@@ -1,0 +1,11 @@
+local modem = peripheral.find("modem")
+if not modem then
+    error("No wireless modem found!")
+end
+rednet.open(peripheral.getName(modem))
+
+print("Waiting for messages...")
+while true do
+    local senderId, message, protocol = rednet.receive()
+    print("Received message: " .. message)
+end
