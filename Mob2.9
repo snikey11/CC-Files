@@ -6,7 +6,9 @@ if not modem then
 end
 rednet.open(peripheral.getName(modem)) -- Open the modem for communication
 
-monitor.setTextScale(2)
+local targetComputerID = 2
+
+monitor.setTextScale(1)
 monitor.clear()
 
 -- Button properties
