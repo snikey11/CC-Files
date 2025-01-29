@@ -1,73 +1,77 @@
--- Initialize peripherals
-local monitor = peripheral.wrap("top") -- Monitor is above the computer
-local modem = peripheral.find("modem") -- Find a wireless modem
+-- Find the monitor and modem
+local monitor = peripheral.find("monitor")
+if not monitor then
+    error("No monitor found!")
+end
+local modem = peripheral.find("modem")
 if not modem then
     error("No wireless modem found!")
 end
-rednet.open(peripheral.getName(modem)) -- Open the modem for communication
 
-local targetComputerID = 17 -- Receiver ID
+rednet.open(peripheral.getName(modem)) -- Open the wireless modem
+
+local targetComputerID = 2 -- Set this to the actual ID of the second computer
 
 monitor.setTextScale(1)
 monitor.clear()
 
--- Button properties
+-- Define buttons
 local buttons = {
-    {label = "cow", x = 2, y = 2, width = 10, height = 3, color = colors.red, active = false},
-    {label = "chicken", x = 2, y = 6, width = 10, height = 3, color = colors.red, active = false},
-    {label = "pig", x = 2, y = 10, width = 10, height = 3, color = colors.red, active = false},
-    {label = "sheep", x = 2, y = 14, width = 10, height = 3, color = colors.red, active = false}
+    {label = "Cow", x = 2, y = 2, width = 10, height = 3, color = colors.red, active = false},
+    {label = "Pig", x = 2, y = 6, width = 10, height = 3, color = colors.red, active = false},
+    {label = "Chicken", x = 2, y = 10, width = 10, height = 3, color = colors.red, active = false},
+    {label = "Sheep", x = 2, y = 14, width = 10, height = 3, color = colors.red, active = false}
 }
 
--- Draw a button
+-- Function to draw a button
 local function drawButton(button)
     monitor.setBackgroundColor(button.color)
     monitor.setTextColor(colors.white)
-    
+
     for i = 0, button.height - 1 do
         monitor.setCursorPos(button.x, button.y + i)
         monitor.write(string.rep(" ", button.width))
     end
-    
+
     local labelX = button.x + math.floor((button.width - #button.label) / 2)
     local labelY = button.y + math.floor(button.height / 2)
     monitor.setCursorPos(labelX, labelY)
     monitor.write(button.label)
-    
+
     monitor.setBackgroundColor(colors.black) -- Reset background
 end
 
--- Draw all buttons
+-- Function to draw all buttons
 local function drawButtons()
     for _, button in ipairs(buttons) do
         drawButton(button)
     end
 end
 
--- Check if a touch is within a button's bounds
+-- Function to check if a touch is within a button's bounds
 local function isTouchInButton(x, y, button)
     return x >= button.x and x < (button.x + button.width) and y >= button.y and y < (button.y + button.height)
 end
 
--- Toggle button state and send a rednet signal
+-- Function to toggle button state and send a signal
 local function toggleButton(button)
     button.active = not button.active
     button.color = colors.green if button.active else colors.red
     
     drawButton(button)
 
-    -- Send the button label to computer ID 17
-    rednet.send(targetComputerID, button.label)
-    print("Sent message to " .. targetComputerID .. ": " .. button.label)
+    -- Send signal to Computer 2
+    rednet.send(targetComputerID, button.label .. ":" .. (button.active and "on" or "off"))
+    print("Sent: " .. button.label .. " -> " .. (button.active and "on" or "off"))
 end
 
--- Main loop
+-- Main program loop
 local function main()
     drawButtons()
-    
+
     while true do
         local event, side, x, y = os.pullEvent("monitor_touch")
-        
+
         for _, button in ipairs(buttons) do
             if isTouchInButton(x, y, button) then
                 toggleButton(button)
@@ -77,5 +81,4 @@ local function main()
     end
 end
 
--- Run the main loop
 main()
