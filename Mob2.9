@@ -1,12 +1,11 @@
 -- Initialize peripherals
 local monitor = peripheral.wrap("top") -- Monitor is above the computer
-local modem = peripheral.find("modem") -- Find a wireless modem
-if not modem then
-    error("No wireless modem found!")
+local modem = peripheral.wrap"bottom") -- Find a wireless modem
+
 end
 rednet.open(peripheral.getName(modem)) -- Open the modem for communication
 
-local targetComputerID = 17
+local targetComputerID = 17 -- Receiver ID
 
 monitor.setTextScale(1)
 monitor.clear()
@@ -21,17 +20,14 @@ local buttons = {
 
 -- Draw a button
 local function drawButton(button)
-    local bgColor = button.color
-    monitor.setBackgroundColor(bgColor)
+    monitor.setBackgroundColor(button.color)
     monitor.setTextColor(colors.white)
     
-    -- Fill the button area
     for i = 0, button.height - 1 do
         monitor.setCursorPos(button.x, button.y + i)
         monitor.write(string.rep(" ", button.width))
     end
     
-    -- Write the label in the center
     local labelX = button.x + math.floor((button.width - #button.label) / 2)
     local labelY = button.y + math.floor(button.height / 2)
     monitor.setCursorPos(labelX, labelY)
@@ -54,27 +50,26 @@ end
 
 -- Toggle button state and send a rednet signal
 local function toggleButton(button)
-    if button.active then
-        button.color = colors.red
-    else
-        button.color = colors.green
-        rednet.broadcast(button.label) -- Send the button label via rednet
-    end
     button.active = not button.active
+    button.color = colors.green if button.active else colors.red
+    
+    drawButton(button)
+
+    -- Send the button label to computer ID 17
+    rednet.send(targetComputerID, button.label)
+    print("Sent message to " .. targetComputerID .. ": " .. button.label)
 end
 
--- Main program loop
+-- Main loop
 local function main()
     drawButtons()
     
     while true do
-        -- Wait for monitor touch events
         local event, side, x, y = os.pullEvent("monitor_touch")
         
         for _, button in ipairs(buttons) do
             if isTouchInButton(x, y, button) then
                 toggleButton(button)
-                drawButton(button)
                 break
             end
         end
