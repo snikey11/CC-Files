@@ -1,6 +1,6 @@
 -- Initialize peripherals
 local monitor = peripheral.wrap("top") -- Monitor is above the computer
-local modem = peripheral.wrap"bottom") -- Find a wireless modem
+local modem = peripheral.wrap("bottom") -- Find a wireless modem
 
 end
 rednet.open(peripheral.getName(modem)) -- Open the modem for communication
