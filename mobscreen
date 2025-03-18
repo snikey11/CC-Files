@@ -18,18 +18,18 @@ monitor.clear()
 
 -- Define buttons for the first set (Blaze, Pyromancer, Enderman, ElderGaurd)
 local buttons_1 = {
-    {label = "Blaze", x = 4, y = 2, width = 11, height = 3, color = colors.red, active = false},
-    {label = "Pyromancer", x = 4, y = 6, width = 11, height = 3, color = colors.red, active = false},
-    {label = "Enderman", x = 4, y = 10, width = 11, height = 3, color = colors.red, active = false},
-    {label = "ElderGuard", x = 4, y = 14, width = 11, height = 3, color = colors.red, active = false}
+    {label = "CaveCreeper", x = 4, y = 2, width = 11, height = 3, color = colors.red, active = false},
+    {label = "AncKnight", x = 4, y = 6, width = 11, height = 3, color = colors.red, active = false},
+    {label = "Spider", x = 4, y = 10, width = 11, height = 3, color = colors.red, active = false},
+    {label = "Creeper", x = 4, y = 14, width = 11, height = 3, color = colors.red, active = false}
 }
 
 -- Define buttons for the second set (Witch, Wither, Cave Creeper, Ancient Knight)
 local buttons_2 = {
     {label = "Witch", x = 16, y = 2, width = 11, height = 3, color = colors.red, active = false},
     {label = "Wither", x = 16, y = 6, width = 11, height = 3, color = colors.red, active = false},
-    {label = "CaveCreeper", x = 16, y = 10, width = 11, height = 3, color = colors.red, active = false},
-    {label = "AncKnight", x = 16, y = 14, width = 11, height = 3, color = colors.red, active = false}
+    {label = "Blaze", x = 16, y = 10, width = 11, height = 3, color = colors.red, active = false},
+    {label = "Pyromancer", x = 16, y = 14, width = 11, height = 3, color = colors.red, active = false}
 }
 
 -- Function to draw a button
