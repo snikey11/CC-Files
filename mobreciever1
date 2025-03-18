@@ -11,9 +11,9 @@ print("Listening for signals from Computer 1...")
 -- Mapping button names to redstone sides
 local redstoneMapping = {
     Blaze = "left",
-    Pyromancer = "back",
-    Enderman = "right",
-    ElderGuard = "front" 
+    Wither = "back",
+    Witch = "right",
+    Pyromancer = "front" 
 }
 
 while true do
