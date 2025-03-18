@@ -10,8 +10,8 @@ print("Listening for signals from Computer 1...")
 
 -- Mapping button names to redstone sides for Computer 3
 local redstoneMapping = {
-    Witch = "left",
-    Wither = "back",
+    Spider = "left",
+    Creeper = "back",
     CaveCreeper = "right",
     AncKnight = "front"
 }
