@@ -13,7 +13,7 @@ local redstoneMapping = {
     Blaze = "left",
     Wither = "back",
     Witch = "right",
-    Pyromancer = "front" 
+    Creeper = "front" 
 }
 
 while true do
