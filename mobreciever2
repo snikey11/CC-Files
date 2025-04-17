@@ -8,7 +8,7 @@ rednet.open(peripheral.getName(modem))
 
 print("Listening for signals from Computer 1...")
 
--- Mapping button names to redstone sides for Computer 3
+-- Mapping button names to redstone sides
 local redstoneMapping = {
     Pyro = "left",
     Enderman = "back",
