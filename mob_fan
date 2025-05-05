@@ -1,100 +1,101 @@
--- Find and initialize the monitor
+-- Peripheral setup
 local monitor = peripheral.find("monitor")
-if not monitor then error("No monitor found!") end
+if not monitor then error("No monitor found") end
+
 monitor.setTextScale(1)
 monitor.clear()
+monitor.setBackgroundColor(colors.black)
+monitor.setTextColor(colors.white)
 
--- Discover all redstone relays and index them by numeric ID
+-- Discover redstone relays by actual network ID
 local relays = {}
 for _, name in ipairs(peripheral.getNames()) do
     if peripheral.getType(name) == "redstoneIntegrator" or peripheral.getType(name) == "redstoneRelay" then
-        local id = tonumber(name:match("(%d+)$"))
-        if id then
+        local ok, id = pcall(function() return peripheral.call(name, "getID") end)
+        if ok and id then
             relays[id] = peripheral.wrap(name)
+        else
+            print("Warning: Could not get ID from " .. name)
         end
     end
 end
 
--- Validate that all 16 relays are found
-for i = 0, 15 do
-    if not relays[i] then
-        print("Warning: Relay with ID " .. i .. " not found on the network.")
-    end
-end
-
--- Define button data
+-- Button definitions
 local buttons = {
     {
         label = "Left Spawner",
-        x = 2, y = 2, width = 15, height = 5,
-        color = colors.red,
-        active = false,
-        ids = {0, 1, 2, 3, 4, 5, 6, 7}
+        x = 2,
+        y = 3,
+        width = 17,
+        height = 5,
+        ids = {0,1,2,3,4,5,6,7},
+        state = false,
+        colorOn = colors.green,
+        colorOff = colors.red
     },
     {
         label = "Right Spawner",
-        x = 2, y = 8, width = 15, height = 5,
-        color = colors.red,
-        active = false,
-        ids = {8, 9, 10, 11, 12, 13, 14, 15}
+        x = 2,
+        y = 10,
+        width = 17,
+        height = 5,
+        ids = {8,9,10,11,12,13,14,15},
+        state = false,
+        colorOn = colors.green,
+        colorOff = colors.red
     }
 }
 
 -- Draw a single button
 local function drawButton(button)
-    monitor.setBackgroundColor(button.color)
-    monitor.setTextColor(colors.white)
+    local color = button.state and button.colorOn or button.colorOff
+    monitor.setBackgroundColor(color)
     for i = 0, button.height - 1 do
         monitor.setCursorPos(button.x, button.y + i)
         monitor.write(string.rep(" ", button.width))
     end
-    local labelX = button.x + math.floor((button.width - #button.label) / 2)
-    local labelY = button.y + math.floor(button.height / 2)
-    monitor.setCursorPos(labelX, labelY)
+    monitor.setCursorPos(button.x + math.floor((button.width - #button.label)/2), button.y + math.floor(button.height/2))
+    monitor.setTextColor(colors.white)
     monitor.write(button.label)
     monitor.setBackgroundColor(colors.black)
 end
 
 -- Draw all buttons
-local function drawButtons()
-    for _, button in ipairs(buttons) do
-        drawButton(button)
+local function drawAllButtons()
+    for _, btn in ipairs(buttons) do
+        drawButton(btn)
     end
 end
 
--- Check if a touch is inside a button
+-- Check if touch was inside a button
 local function isTouchInButton(x, y, button)
     return x >= button.x and x < (button.x + button.width) and y >= button.y and y < (button.y + button.height)
 end
 
--- Toggle a button and send redstone output to its relays
+-- Toggle button state and activate relays
 local function toggleButton(button)
-    button.active = not button.active
-    button.color = button.active and colors.green or colors.red
+    button.state = not button.state
     drawButton(button)
 
     for _, id in ipairs(button.ids) do
         local relay = relays[id]
         if relay then
-            relay.setOutput("top", button.active)
+            relay.setOutput("top", button.state)
         else
-            print("Relay ID " .. id .. " not available.")
+            print("Warning: Relay with ID " .. id .. " not found on network")
         end
     end
 end
 
--- Main event loop
-local function main()
-    drawButtons()
-    while true do
-        local event, side, x, y = os.pullEvent("monitor_touch")
-        for _, button in ipairs(buttons) do
-            if isTouchInButton(x, y, button) then
-                toggleButton(button)
-                break
-            end
+-- Main program
+drawAllButtons()
+
+while true do
+    local event, side, x, y = os.pullEvent("monitor_touch")
+    for _, btn in ipairs(buttons) do
+        if isTouchInButton(x, y, btn) then
+            toggleButton(btn)
+            break
         end
     end
 end
-
-main()
