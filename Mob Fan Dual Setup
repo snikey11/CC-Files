@@ -1,0 +1,90 @@
+-- Find and initialize monitor
+local monitor = peripheral.find("monitor")
+if not monitor then error("No monitor found!") end
+monitor.setTextScale(1)
+monitor.clear()
+
+-- Define relay IDs
+local leftRelays = {0, 1, 2, 3, 4, 5, 6, 7}
+local rightRelays = {8, 9, 10, 11, 12, 13, 14, 15}
+
+-- Create button data
+local buttons = {
+    {
+        label = "Left Spawner",
+        x = 2, y = 2, width = 15, height = 5,
+        color = colors.red,
+        active = false,
+        relays = leftRelays
+    },
+    {
+        label = "Right Spawner",
+        x = 2, y = 8, width = 15, height = 5,
+        color = colors.red,
+        active = false,
+        relays = rightRelays
+    }
+}
+
+-- Function to draw a button
+local function drawButton(button)
+    monitor.setBackgroundColor(button.color)
+    monitor.setTextColor(colors.white)
+    for i = 0, button.height - 1 do
+        monitor.setCursorPos(button.x, button.y + i)
+        monitor.write(string.rep(" ", button.width))
+    end
+    local labelX = button.x + math.floor((button.width - #button.label) / 2)
+    local labelY = button.y + math.floor(button.height / 2)
+    monitor.setCursorPos(labelX, labelY)
+    monitor.write(button.label)
+    monitor.setBackgroundColor(colors.black)
+end
+
+-- Redraw all buttons
+local function drawButtons()
+    for _, btn in ipairs(buttons) do
+        drawButton(btn)
+    end
+end
+
+-- Helper to toggle relay power state
+local function setRelays(relayIDs, state)
+    for _, id in ipairs(relayIDs) do
+        local relay = peripheral.wrap(tostring(id))
+        if relay then
+            relay.setOutput("top", state)
+        else
+            print("Relay " .. id .. " not found")
+        end
+    end
+end
+
+-- Check if a coordinate is inside a button
+local function isTouchInButton(x, y, button)
+    return x >= button.x and x < (button.x + button.width) and y >= button.y and y < (button.y + button.height)
+end
+
+-- Toggle button and relays
+local function toggleButton(button)
+    button.active = not button.active
+    button.color = button.active and colors.green or colors.red
+    drawButton(button)
+    setRelays(button.relays, button.active)
+end
+
+-- Main loop
+local function main()
+    drawButtons()
+    while true do
+        local event, side, x, y = os.pullEvent("monitor_touch")
+        for _, button in ipairs(buttons) do
+            if isTouchInButton(x, y, button) then
+                toggleButton(button)
+                break
+            end
+        end
+    end
+end
+
+main()
