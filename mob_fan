@@ -1,101 +1,54 @@
--- Peripheral setup
+-- Setup peripherals
 local monitor = peripheral.find("monitor")
 if not monitor then error("No monitor found") end
 
-monitor.setTextScale(1)
-monitor.clear()
-monitor.setBackgroundColor(colors.black)
-monitor.setTextColor(colors.white)
+local relays = peripheral.findAll("redstone_relay")
+if #relays == 0 then error("No redstone relays found") end
 
--- Discover redstone relays by actual network ID
-local relays = {}
-for _, name in ipairs(peripheral.getNames()) do
-    if peripheral.getType(name) == "redstoneIntegrator" or peripheral.getType(name) == "redstoneRelay" then
-        local ok, id = pcall(function() return peripheral.call(name, "getID") end)
-        if ok and id then
-            relays[id] = peripheral.wrap(name)
-        else
-            print("Warning: Could not get ID from " .. name)
-        end
-    end
-end
-
--- Button definitions
-local buttons = {
-    {
-        label = "Left Spawner",
-        x = 2,
-        y = 3,
-        width = 17,
-        height = 5,
-        ids = {0,1,2,3,4,5,6,7},
-        state = false,
-        colorOn = colors.green,
-        colorOff = colors.red
-    },
-    {
-        label = "Right Spawner",
-        x = 2,
-        y = 10,
-        width = 17,
-        height = 5,
-        ids = {8,9,10,11,12,13,14,15},
-        state = false,
-        colorOn = colors.green,
-        colorOff = colors.red
-    }
+-- Button state
+local button = {
+    label = "Toggle Spawners",
+    x = 2,
+    y = 3,
+    width = 20,
+    height = 5,
+    active = false
 }
 
--- Draw a single button
-local function drawButton(button)
-    local color = button.state and button.colorOn or button.colorOff
-    monitor.setBackgroundColor(color)
+-- Draw button
+local function drawButton()
+    monitor.setBackgroundColor(button.active and colors.green or colors.red)
     for i = 0, button.height - 1 do
         monitor.setCursorPos(button.x, button.y + i)
         monitor.write(string.rep(" ", button.width))
     end
-    monitor.setCursorPos(button.x + math.floor((button.width - #button.label)/2), button.y + math.floor(button.height/2))
+    local labelX = button.x + math.floor((button.width - #button.label) / 2)
+    local labelY = button.y + math.floor(button.height / 2)
+    monitor.setCursorPos(labelX, labelY)
     monitor.setTextColor(colors.white)
     monitor.write(button.label)
     monitor.setBackgroundColor(colors.black)
 end
 
--- Draw all buttons
-local function drawAllButtons()
-    for _, btn in ipairs(buttons) do
-        drawButton(btn)
+-- Toggle relays
+local function toggleRelays(state)
+    for _, relay in ipairs(relays) do
+        relay.setOutput("top", state)
     end
 end
 
--- Check if touch was inside a button
-local function isTouchInButton(x, y, button)
-    return x >= button.x and x < (button.x + button.width) and y >= button.y and y < (button.y + button.height)
-end
+-- Init
+monitor.setTextScale(1)
+monitor.setBackgroundColor(colors.black)
+monitor.clear()
+drawButton()
 
--- Toggle button state and activate relays
-local function toggleButton(button)
-    button.state = not button.state
-    drawButton(button)
-
-    for _, id in ipairs(button.ids) do
-        local relay = relays[id]
-        if relay then
-            relay.setOutput("top", button.state)
-        else
-            print("Warning: Relay with ID " .. id .. " not found on network")
-        end
-    end
-end
-
--- Main program
-drawAllButtons()
-
+-- Main loop
 while true do
     local event, side, x, y = os.pullEvent("monitor_touch")
-    for _, btn in ipairs(buttons) do
-        if isTouchInButton(x, y, btn) then
-            toggleButton(btn)
-            break
-        end
+    if x >= button.x and x < button.x + button.width and y >= button.y and y < button.y + button.height then
+        button.active = not button.active
+        toggleRelays(button.active)
+        drawButton()
     end
 end
