@@ -1,32 +1,46 @@
--- Find and initialize monitor
+-- Find and initialize the monitor
 local monitor = peripheral.find("monitor")
 if not monitor then error("No monitor found!") end
 monitor.setTextScale(1)
 monitor.clear()
 
--- Define relay IDs
-local leftRelays = {0, 1, 2, 3, 4, 5, 6, 7}
-local rightRelays = {8, 9, 10, 11, 12, 13, 14, 15}
+-- Discover all redstone relays and index them by numeric ID
+local relays = {}
+for _, name in ipairs(peripheral.getNames()) do
+    if peripheral.getType(name) == "redstoneIntegrator" or peripheral.getType(name) == "redstoneRelay" then
+        local id = tonumber(name:match("(%d+)$"))
+        if id then
+            relays[id] = peripheral.wrap(name)
+        end
+    end
+end
 
--- Create button data
+-- Validate that all 16 relays are found
+for i = 0, 15 do
+    if not relays[i] then
+        print("Warning: Relay with ID " .. i .. " not found on the network.")
+    end
+end
+
+-- Define button data
 local buttons = {
     {
         label = "Left Spawner",
         x = 2, y = 2, width = 15, height = 5,
         color = colors.red,
         active = false,
-        relays = leftRelays
+        ids = {0, 1, 2, 3, 4, 5, 6, 7}
     },
     {
         label = "Right Spawner",
         x = 2, y = 8, width = 15, height = 5,
         color = colors.red,
         active = false,
-        relays = rightRelays
+        ids = {8, 9, 10, 11, 12, 13, 14, 15}
     }
 }
 
--- Function to draw a button
+-- Draw a single button
 local function drawButton(button)
     monitor.setBackgroundColor(button.color)
     monitor.setTextColor(colors.white)
@@ -41,39 +55,35 @@ local function drawButton(button)
     monitor.setBackgroundColor(colors.black)
 end
 
--- Redraw all buttons
+-- Draw all buttons
 local function drawButtons()
-    for _, btn in ipairs(buttons) do
-        drawButton(btn)
+    for _, button in ipairs(buttons) do
+        drawButton(button)
     end
 end
 
--- Helper to toggle relay power state
-local function setRelays(relayIDs, state)
-    for _, id in ipairs(relayIDs) do
-        local relay = peripheral.wrap(tostring(id))
-        if relay then
-            relay.setOutput("top", state)
-        else
-            print("Relay " .. id .. " not found")
-        end
-    end
-end
-
--- Check if a coordinate is inside a button
+-- Check if a touch is inside a button
 local function isTouchInButton(x, y, button)
     return x >= button.x and x < (button.x + button.width) and y >= button.y and y < (button.y + button.height)
 end
 
--- Toggle button and relays
+-- Toggle a button and send redstone output to its relays
 local function toggleButton(button)
     button.active = not button.active
     button.color = button.active and colors.green or colors.red
     drawButton(button)
-    setRelays(button.relays, button.active)
+
+    for _, id in ipairs(button.ids) do
+        local relay = relays[id]
+        if relay then
+            relay.setOutput("top", button.active)
+        else
+            print("Relay ID " .. id .. " not available.")
+        end
+    end
 end
 
--- Main loop
+-- Main event loop
 local function main()
     drawButtons()
     while true do
