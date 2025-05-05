@@ -10,8 +10,8 @@ end
 
 rednet.open(peripheral.getName(modem)) -- Open the wireless modem
 
-local targetComputerID_2 = 2  -- ID for Computer 2
-local targetComputerID_3 = 3  -- ID for Computer 3
+local targetComputerID_2 = x  -- ID for Computer 2
+local targetComputerID_3 = x  -- ID for Computer 3
 
 monitor.setTextScale(1)
 monitor.clear()
