@@ -8,12 +8,14 @@ monitor.setTextScale(1)
 monitor.clear()
 
 -- Attempt to wrap relays labeled "0" through "7"
-local relays = {}
-for i = 0, 7 do
-    local name = tostring(i)
-    local relay = peripheral.wrap(name)
-    if relay and peripheral.getType(name) == "redstone_relay" then
-        relays[#relays + 1] = relay
+    local targetredstone_relay_0 = 0
+    local targetredstone_relay_1 = 1
+    local targetredstone_relay_2 = 2 
+    local targetredstone_relay_3 = 3
+    local targetredstone_relay_4 = 4
+    local targetredstone_relay_5 = 5 
+    local targetredstone_relay_6 = 6 
+    local targetredstone_relay_7 = 7 
     else
         print("Warning: Relay with ID " .. name .. " not found or not a redstone_relay.")
     end
