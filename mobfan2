@@ -7,7 +7,17 @@ end
 monitor.setTextScale(1)
 monitor.clear()
 
--- Define buttons
+-- Attempt to wrap relays labeled "0" through "7"
+    local targetredstone_relay_0 = 0
+    local targetredstone_relay_1 = 1
+    local targetredstone_relay_2 = 2 
+    local targetredstone_relay_3 = 3
+    local targetredstone_relay_4 = 4
+    local targetredstone_relay_5 = 5 
+    local targetredstone_relay_6 = 6 
+    local targetredstone_relay_7 = 7 
+
+-- Define buttons 
 local buttons_1 = {
     {label = "Fans", x = 4, y = 2, width = 11, height = 3, color = colors.red, active = false},
 }
@@ -42,7 +52,7 @@ local function isTouchInButton(x, y, button)
     return x >= button.x and x < (button.x + button.width) and y >= button.y and y < (button.y + button.height)
 end
 
--- Function to toggle button state and activate relays 0–7 by ID
+-- Function to toggle button state and activate relays
 local function toggleButton(button)
     button.active = not button.active
 
@@ -50,17 +60,12 @@ local function toggleButton(button)
     button.color = button.active and colors.green or colors.red
     drawButton(button)
 
-    -- Get all peripheral names
-    local peripheralNames = peripheral.getNames()
-
-    -- Loop through and activate only those with names "0" through "7"
-    for _, name in ipairs(peripheralNames) do
-        if tonumber(name) and tonumber(name) >= 0 and tonumber(name) <= 7 then
+    -- Toggle all relays
+    for _, name in pairs(peripheral.getNames()) do
+        if peripheral.getType(name) == "redstone_relay" then
             local relay = peripheral.wrap(name)
             relay.setOutput("top", button.active)
-        end
     end
-end
 
 -- Main program loop
 local function main()
