@@ -16,7 +16,6 @@ monitor.clear()
     local targetredstone_relay_5 = 5 
     local targetredstone_relay_6 = 6 
     local targetredstone_relay_7 = 7 
-end
 
 -- Define buttons 
 local buttons_1 = {
@@ -65,7 +64,6 @@ local function toggleButton(button)
     local relay = peripheral.find("redstone_relay")
         relay.setOutput("top", button.active)
     end
-end
 
 -- Main program loop
 local function main()
