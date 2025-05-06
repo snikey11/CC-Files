@@ -1,0 +1,81 @@
+-- Find the monitor
+local monitor = peripheral.find("monitor")
+if not monitor then
+    error("No monitor found!")
+end
+
+monitor.setTextScale(1)
+monitor.clear()
+
+-- Define buttons
+local buttons_1 = {
+    {label = "Fans", x = 4, y = 2, width = 11, height = 3, color = colors.red, active = false},
+}
+
+-- Function to draw a button
+local function drawButton(button)
+    monitor.setBackgroundColor(button.color)
+    monitor.setTextColor(colors.white)
+
+    for i = 0, button.height - 1 do
+        monitor.setCursorPos(button.x, button.y + i)
+        monitor.write(string.rep(" ", button.width))
+    end
+
+    local labelX = button.x + math.floor((button.width - #button.label) / 2)
+    local labelY = button.y + math.floor(button.height / 2)
+    monitor.setCursorPos(labelX, labelY)
+    monitor.write(button.label)
+
+    monitor.setBackgroundColor(colors.black) -- Reset background
+end
+
+-- Function to draw all buttons
+local function drawButtons()
+    for _, button in ipairs(buttons_1) do
+        drawButton(button)
+    end
+end
+
+-- Function to check if a touch is within a button's bounds
+local function isTouchInButton(x, y, button)
+    return x >= button.x and x < (button.x + button.width) and y >= button.y and y < (button.y + button.height)
+end
+
+-- Function to toggle button state and activate all relays 0–7
+local function toggleButton(button)
+    button.active = not button.active
+
+    -- Change button color
+    button.color = button.active and colors.green or colors.red
+    drawButton(button)
+
+    -- Toggle all 8 relays
+    for i = 0, 7 do
+        local name = tostring(i)
+        if peripheral.isPresent(name) then
+            local relay = peripheral.wrap(name)
+            relay.setOutput("top", button.active)
+        else
+            print("Relay " .. name .. " not found.")
+        end
+    end
+end
+
+-- Main program loop
+local function main()
+    drawButtons()
+
+    while true do
+        local event, side, x, y = os.pullEvent("monitor_touch")
+
+        for _, button in ipairs(buttons_1) do
+            if isTouchInButton(x, y, button) then
+                toggleButton(button)
+                break
+            end
+        end
+    end
+end
+
+main()
