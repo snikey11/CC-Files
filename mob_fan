@@ -62,7 +62,7 @@ local function toggleButton(button)
     drawButton(button)
 
     -- Toggle all relays
-    for _, relay in ipairs(relays) do
+    local relay = peripheral.find("redstone_relay")
         relay.setOutput("top", button.active)
     end
 end
