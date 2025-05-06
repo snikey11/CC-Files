@@ -1,0 +1,76 @@
+-- Find the monitor
+local monitor = peripheral.find("monitor")
+if not monitor then
+    error("No monitor found!")
+end
+
+monitor.setTextScale(1)
+monitor.clear()
+
+-- Define buttons
+local buttons = {
+    {label = "Fans", x = 4, y = 2, width = 11, height = 3, color = colors.red, active = false},
+}
+
+-- Draw a single button
+local function drawButton(button)
+    monitor.setBackgroundColor(button.color)
+    monitor.setTextColor(colors.white)
+
+    for i = 0, button.height - 1 do
+        monitor.setCursorPos(button.x, button.y + i)
+        monitor.write(string.rep(" ", button.width))
+    end
+
+    local labelX = button.x + math.floor((button.width - #button.label) / 2)
+    local labelY = button.y + math.floor(button.height / 2)
+    monitor.setCursorPos(labelX, labelY)
+    monitor.write(button.label)
+
+    monitor.setBackgroundColor(colors.black)
+end
+
+-- Draw all buttons
+local function drawButtons()
+    for _, button in ipairs(buttons) do
+        drawButton(button)
+    end
+end
+
+-- Check if touch is in a button
+local function isTouchInButton(x, y, button)
+    return x >= button.x and x < (button.x + button.width) and y >= button.y and y < (button.y + button.height)
+end
+
+-- Toggle button and relays
+local function toggleButton(button)
+    button.active = not button.active
+    button.color = button.active and colors.green or colors.red
+    drawButton(button)
+
+    for _, name in pairs(peripheral.getNames()) do
+        if peripheral.getType(name) == "redstone_relay" then
+            local relay = peripheral.wrap(name)
+            relay.setOutput("top", button.active)
+        end
+    end
+end
+
+-- Main loop
+local function main()
+    drawButtons()
+
+    while true do
+        local event, side, x, y = os.pullEvent("monitor_touch")
+
+        for _, button in ipairs(buttons) do
+            if isTouchInButton(x, y, button) then
+                toggleButton(button)
+                break
+            end
+        end
+    end
+end
+
+-- Start the program
+main()
