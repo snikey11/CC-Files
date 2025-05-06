@@ -42,7 +42,7 @@ local function isTouchInButton(x, y, button)
     return x >= button.x and x < (button.x + button.width) and y >= button.y and y < (button.y + button.height)
 end
 
--- Function to toggle button state and activate all relays 0–7
+-- Function to toggle button state and activate relays 0–7 by ID
 local function toggleButton(button)
     button.active = not button.active
 
@@ -50,14 +50,14 @@ local function toggleButton(button)
     button.color = button.active and colors.green or colors.red
     drawButton(button)
 
-    -- Toggle all 8 relays
-    for i = 0, 7 do
-        local name = tostring(i)
-        if peripheral.isPresent(name) then
+    -- Get all peripheral names
+    local peripheralNames = peripheral.getNames()
+
+    -- Loop through and activate only those with names "0" through "7"
+    for _, name in ipairs(peripheralNames) do
+        if tonumber(name) and tonumber(name) >= 0 and tonumber(name) <= 7 then
             local relay = peripheral.wrap(name)
             relay.setOutput("top", button.active)
-        else
-            print("Relay " .. name .. " not found.")
         end
     end
 end
