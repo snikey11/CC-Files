@@ -1,4 +1,8 @@
-rednet.open("bottom")
+-- Find the monitor and modem
+local monitor = peripheral.find("monitor")
+if not monitor then
+    error("No monitor found!")
+end
 local modem = peripheral.find("modem")
 if not modem then
     error("No wireless modem found!")
