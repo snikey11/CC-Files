@@ -1,1 +1,2 @@
+-- Run the command "edit startup" and then throw this in; "Name" is the programs name"--
 shell.run("Name")
