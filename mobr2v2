@@ -5,10 +5,17 @@ end
 
 rednet.open(peripheral.getName(modem))
 
-print("Listening for signals from Computer 1...")
+print("Listening for signals...")
 
--- Mapping button names to redstone sides
+-- Add ALL names from Computer 1 here:
 local redstoneMapping = {
+    -- From first set
+    Blaze = "left",
+    Wither = "back",
+    Witch = "right",
+    Creeper = "front",
+
+    -- From second set
     Pyro = "left",
     Enderman = "back",
     CaveCreeper = "right",
@@ -18,32 +25,23 @@ local redstoneMapping = {
 while true do
     local senderId, message = rednet.receive()
 
-    -- Debug: show what we actually received
-    print("Received from", senderId, "type:", type(message), "value:", tostring(message))
+    -- Safely force message to string
+    message = tostring(message)
 
-    local name, state
-    if type(message) == "string" then
-        name, state = message:match("([^:]+):([^:]+)")
-    elseif type(message) == "table" then
-        -- If the sender sent a table, try to read common fields
-        name = message.name or message[1]
-        state = message.state or message[2]
-    else
-        -- Convert other types (number, boolean, etc.) to string and attempt to parse
-        local ms = tostring(message)
-        name, state = ms:match("([^:]+):([^:]+)")
-    end
+    -- Expect "Name:on/off"
+    local name, state = message:match("([^:]+):([^:]+)")
 
     if name and state then
         local side = redstoneMapping[name]
+
         if side then
-            local isActive = (state == "on")
-            redstone.setAnalogOutput(side, isActive and 1 or 0) -- Weak redstone signal of 1
-            print("Set redstone output on " .. side .. " to " .. (isActive and "1" or "0"))
+            local active = (state == "on")
+            redstone.setAnalogOutput(side, active and 1 or 0)
+            print("Set " .. side .. " to " .. (active and "1" or "0"))
         else
-            print("Unknown name received:", name)
+            print("Unknown name from Computer 1: " .. name)
         end
     else
-        print("Couldn't parse name/state from message:", tostring(message))
+        print("Invalid message received: " .. message)
     end
 end
