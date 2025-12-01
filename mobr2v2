@@ -1,0 +1,49 @@
+local modem = peripheral.find("modem")
+if not modem then
+    error("No wireless modem found!")
+end
+
+rednet.open(peripheral.getName(modem))
+
+print("Listening for signals from Computer 1...")
+
+-- Mapping button names to redstone sides
+local redstoneMapping = {
+    Pyro = "left",
+    Enderman = "back",
+    CaveCreeper = "right",
+    AncKnight = "front"
+}
+
+while true do
+    local senderId, message = rednet.receive()
+
+    -- Debug: show what we actually received
+    print("Received from", senderId, "type:", type(message), "value:", tostring(message))
+
+    local name, state
+    if type(message) == "string" then
+        name, state = message:match("([^:]+):([^:]+)")
+    elseif type(message) == "table" then
+        -- If the sender sent a table, try to read common fields
+        name = message.name or message[1]
+        state = message.state or message[2]
+    else
+        -- Convert other types (number, boolean, etc.) to string and attempt to parse
+        local ms = tostring(message)
+        name, state = ms:match("([^:]+):([^:]+)")
+    end
+
+    if name and state then
+        local side = redstoneMapping[name]
+        if side then
+            local isActive = (state == "on")
+            redstone.setAnalogOutput(side, isActive and 1 or 0) -- Weak redstone signal of 1
+            print("Set redstone output on " .. side .. " to " .. (isActive and "1" or "0"))
+        else
+            print("Unknown name received:", name)
+        end
+    else
+        print("Couldn't parse name/state from message:", tostring(message))
+    end
+end
