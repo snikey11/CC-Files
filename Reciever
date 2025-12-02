@@ -1,0 +1,20 @@
+-- Find wireless modem and open Rednet
+local modem = peripheral.find("modem")
+if not modem then error("No modem found") end
+rednet.open(peripheral.getName(modem))
+
+print("Receiver ready. Waiting for messages...")
+
+while true do
+    local senderID, message = rednet.receive()
+
+    if message == "on" then
+        redstone.setOutput("front", true)
+        print("Front output: ON")
+    elseif message == "off" then
+        redstone.setOutput("front", false)
+        print("Front output: OFF")
+    else
+        print("Unknown message: " .. tostring(message))
+    end
+end
