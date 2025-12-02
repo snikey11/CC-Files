@@ -1,0 +1,31 @@
+-- Find wireless modem and open Rednet
+local modem = peripheral.find("modem")
+if not modem then error("No modem found") end
+rednet.open(peripheral.getName(modem))
+
+-- Set the ID of the receiver computer
+local targetID = 2   -- <-- CHANGE this to Computer 2's ID
+
+print("Sender ready. Watching back redstone input...")
+
+local lastState = false
+
+while true do
+    -- Read redstone signal on the BACK
+    local currentState = redstone.getInput("back")
+
+    -- Only send message when state changes
+    if currentState ~= lastState then
+        lastState = currentState
+
+        if currentState then
+            rednet.send(targetID, "on")
+            print("Sent: on")
+        else
+            rednet.send(targetID, "off")
+            print("Sent: off")
+        end
+    end
+
+    sleep(0.1)
+end
