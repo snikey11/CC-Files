@@ -4,7 +4,7 @@ if not modem then error("No modem found") end
 rednet.open(peripheral.getName(modem))
 
 -- Set the ID of the receiver computer
-local targetID = 2   -- <-- CHANGE this to Computer 2's ID
+local targetID = X   -- <-- CHANGE this to Computer's ID
 
 print("Sender ready. Watching back redstone input...")
 
